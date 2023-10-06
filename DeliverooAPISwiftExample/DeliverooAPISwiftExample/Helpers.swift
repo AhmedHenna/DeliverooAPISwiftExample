@@ -16,3 +16,7 @@ func concatenateAndEncodeBase64(string1: String, string2: String) -> String? {
     
     return nil
 }
+
+// TODO: a method that should look through the Restaurant Model to find our resturant and return lat and lon
+
+// TODO: Add methods from previous project to caclualte which delievry system to go to, accept/deny, and dispay orders

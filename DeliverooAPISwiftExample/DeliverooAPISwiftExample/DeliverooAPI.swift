@@ -116,7 +116,7 @@ func executeRequest(request: URLRequest, completion: @escaping (Result<[Order], 
 
 // MARK: - Get Restarant Location
 func requestRestaurants(accessToken: String, latitude: Double, longitude: Double, completion: @escaping (Result<[Restaurant], Error>) -> Void) {
-    let baseURL = "https://api-sandbox.developers.deliveroo.com/signature/v1/restaurants"
+    let baseURL = Constants.RESTAURANT_LOCATION
     
     guard let finalURL = buildURL(baseURL: baseURL, latitude: latitude, longitude: longitude) else {
         print("Error creating the final URL")
@@ -168,6 +168,50 @@ func executeRequest(request: URLRequest, completion: @escaping (Result<[Restaura
     task.resume()
 }
 
+// MARK: - Update Order Status
+func updateOrderStatus(accessToken: String, orderId: String, newStatus: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    let baseURL = "\(Constants.ORDER_STATUS)\(orderId)"
+    
+    guard let finalURL = URL(string: baseURL) else {
+        print("Error creating the final URL")
+        return
+    }
+    
+    var request = URLRequest(url: finalURL)
+    request.httpMethod = "PATCH"
+    
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+    let requestBody = buildRequestBody(newStatus: newStatus)
+    request.httpBody = requestBody
+    
+    executePatchRequest(request: request, completion: completion)
+}
+
+func buildRequestBody(newStatus: String) -> Data? {
+    let requestBody: [String: Any] = ["status": newStatus]
+    return try? JSONSerialization.data(withJSONObject: requestBody)
+}
+
+func executePatchRequest(request: URLRequest, completion: @escaping (Result<Void, Error>) -> Void) {
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if let error = error {
+            print("Error: \(error)")
+            completion(.failure(error))
+            return
+        }
+        
+        // Check the HTTP response status code for success (e.g., 200 OK)
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+            completion(.success(()))
+        } else {
+            print("HTTP response status code indicates an error")
+            completion(.failure(NSError(domain: "HTTP Error", code: 0, userInfo: nil)))
+        }
+    }
+    task.resume()
+}
 
 
 
@@ -188,7 +232,7 @@ extension Dictionary {
 
 extension CharacterSet {
     static let urlQueryValueAllowed: CharacterSet = {
-        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+        let generalDelimitersToEncode = ":#[]@"
         let subDelimitersToEncode = "!$&'()*+,;="
         
         var allowed = CharacterSet.urlQueryAllowed
