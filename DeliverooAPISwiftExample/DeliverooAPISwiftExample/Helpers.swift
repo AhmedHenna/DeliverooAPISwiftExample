@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 func concatenateAndEncodeBase64(string1: String, string2: String) -> String? {
     let concatenatedString = "\(string1):\(string2)"
     

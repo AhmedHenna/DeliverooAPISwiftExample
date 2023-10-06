@@ -34,3 +34,16 @@ struct Location: Codable {
     let latitude: Double
     let longitude: Double
 }
+
+struct Restaurant: Codable {
+    let id: String
+    let distance: Int
+    let location: RestaurantLocation
+    let name: String
+    let display_name: String
+}
+
+struct RestaurantLocation: Codable {
+    let lat: Double
+    let lon: Double
+}

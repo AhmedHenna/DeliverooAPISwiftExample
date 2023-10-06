@@ -114,6 +114,60 @@ func executeRequest(request: URLRequest, completion: @escaping (Result<[Order], 
     task.resume()
 }
 
+// MARK: - Get Restarant Location
+func requestRestaurants(accessToken: String, latitude: Double, longitude: Double, completion: @escaping (Result<[Restaurant], Error>) -> Void) {
+    let baseURL = "https://api-sandbox.developers.deliveroo.com/signature/v1/restaurants"
+    
+    guard let finalURL = buildURL(baseURL: baseURL, latitude: latitude, longitude: longitude) else {
+        print("Error creating the final URL")
+        return
+    }
+    
+    var request = URLRequest(url: finalURL)
+    request.httpMethod = "GET"
+    
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+    
+    executeRequest(request: request, completion: completion)
+}
+
+func buildURL(baseURL: String, latitude: Double, longitude: Double) -> URL? {
+    var components = URLComponents(string: baseURL)
+    components?.queryItems = [
+        URLQueryItem(name: "latitude", value: String(latitude)),
+        URLQueryItem(name: "longitude", value: String(longitude))
+    ]
+    
+    return components?.url
+}
+
+func executeRequest(request: URLRequest, completion: @escaping (Result<[Restaurant], Error>) -> Void) {
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if let error = error {
+            print("Error: \(error)")
+            completion(.failure(error))
+            return
+        }
+        
+        guard let data = data else {
+            print("No data received")
+            completion(.failure(NSError(domain: "No data received", code: 0, userInfo: nil)))
+            return
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let restaurants = try decoder.decode([Restaurant].self, from: data)
+            completion(.success(restaurants))
+        } catch {
+            print("JSON Decoding Error: \(error)")
+            completion(.failure(error))
+        }
+    }
+    
+    task.resume()
+}
+
 
 
 
