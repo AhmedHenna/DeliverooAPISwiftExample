@@ -10,10 +10,16 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Button("Hello"){
+                requestDeliverooApiToken(clientID: Constants.CLIENT_ID, clientSecret: Constants.CLIENT_SECRET) { result in
+                    switch result{
+                    case .success(let deliverooApi):
+                        print("Access", deliverooApi.access_token)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            }
         }
         .padding()
     }

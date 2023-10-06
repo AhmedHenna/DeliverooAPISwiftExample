@@ -11,6 +11,10 @@
 		29AC39922AD07C4600EB7514 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AC39912AD07C4600EB7514 /* ContentView.swift */; };
 		29AC39942AD07C4700EB7514 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29AC39932AD07C4700EB7514 /* Assets.xcassets */; };
 		29AC39972AD07C4700EB7514 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29AC39962AD07C4700EB7514 /* Preview Assets.xcassets */; };
+		29AC399E2AD09E2D00EB7514 /* DeliverooAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AC399D2AD09E2D00EB7514 /* DeliverooAPI.swift */; };
+		29AC39A02AD09FA300EB7514 /* DeliverooModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AC399F2AD09FA300EB7514 /* DeliverooModel.swift */; };
+		29AC39A22AD0ABDC00EB7514 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AC39A12AD0ABDC00EB7514 /* Constants.swift */; };
+		29AC39A42AD0B9A000EB7514 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AC39A32AD0B9A000EB7514 /* Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +23,10 @@
 		29AC39912AD07C4600EB7514 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		29AC39932AD07C4700EB7514 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29AC39962AD07C4700EB7514 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		29AC399D2AD09E2D00EB7514 /* DeliverooAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliverooAPI.swift; sourceTree = "<group>"; };
+		29AC399F2AD09FA300EB7514 /* DeliverooModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliverooModel.swift; sourceTree = "<group>"; };
+		29AC39A12AD0ABDC00EB7514 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		29AC39A32AD0B9A000EB7514 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,8 +61,12 @@
 			children = (
 				29AC398F2AD07C4600EB7514 /* DeliverooAPISwiftExampleApp.swift */,
 				29AC39912AD07C4600EB7514 /* ContentView.swift */,
+				29AC399D2AD09E2D00EB7514 /* DeliverooAPI.swift */,
+				29AC399F2AD09FA300EB7514 /* DeliverooModel.swift */,
+				29AC39A32AD0B9A000EB7514 /* Helpers.swift */,
 				29AC39932AD07C4700EB7514 /* Assets.xcassets */,
 				29AC39952AD07C4700EB7514 /* Preview Content */,
+				29AC39A12AD0ABDC00EB7514 /* Constants.swift */,
 			);
 			path = DeliverooAPISwiftExample;
 			sourceTree = "<group>";
@@ -137,8 +149,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29AC39A22AD0ABDC00EB7514 /* Constants.swift in Sources */,
+				29AC39A42AD0B9A000EB7514 /* Helpers.swift in Sources */,
 				29AC39922AD07C4600EB7514 /* ContentView.swift in Sources */,
+				29AC399E2AD09E2D00EB7514 /* DeliverooAPI.swift in Sources */,
 				29AC39902AD07C4600EB7514 /* DeliverooAPISwiftExampleApp.swift in Sources */,
+				29AC39A02AD09FA300EB7514 /* DeliverooModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
