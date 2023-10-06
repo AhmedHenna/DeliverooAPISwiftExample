@@ -7,14 +7,13 @@
 
 import Foundation
 
-
+// MARK: - Requesting Access Token
 func requestDeliverooApiToken(clientID: String, clientSecret: String, completion: @escaping (Result<DeliverooApiResponse, Error>) -> Void) {
-    let tokenURL = URL(string: "https://auth.developers.deliveroo.com/oauth2/token")!
+    let tokenURL = URL(string: Constants.AUTH_URL_DELIVEROO)!
     
     var request = URLRequest(url: tokenURL)
     request.httpMethod = "POST"
     
-    // Create the Basic Authorization header
     if let authorization = concatenateAndEncodeBase64(string1: clientID, string2: clientSecret) {
         request.setValue("Basic \(authorization)", forHTTPHeaderField: "Authorization")
     }
@@ -38,13 +37,6 @@ func requestDeliverooApiToken(clientID: String, clientSecret: String, completion
             return
         }
         
-        // Print the JSON data received
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print("Received JSON: \(jsonString)")
-        } else {
-            print("Failed to convert data to JSON string")
-        }
-        
         do {
             let decoder = JSONDecoder()
             let deliverooApi = try decoder.decode(DeliverooApiResponse.self, from: data)
@@ -59,8 +51,73 @@ func requestDeliverooApiToken(clientID: String, clientSecret: String, completion
     task.resume()
 }
 
+// MARK: - Requesting Orders
+func requestAllOrders(brandID: String, restaurantID: String, accessToken: String, completion: @escaping (Result<[Order], Error>) -> Void) {
+    let baseURL = "\(Constants.ORDERS_DELIVEROO)\(brandID)/restaurant/\(restaurantID)/orders"
+    
+    guard let finalURL = buildURL(baseURL: baseURL) else {
+        print("Error creating the final URL")
+        return
+    }
+    
+    var request = URLRequest(url: finalURL)
+    request.httpMethod = "GET"
+    
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+    
+    executeRequest(request: request, completion: completion)
+}
+
+func buildURL(baseURL: String) -> URL? {
+    let calendar = Calendar.current
+    let now = Date()
+    let startOfDay = calendar.startOfDay(for: now)
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    let startDateString = dateFormatter.string(from: startOfDay)
+    
+    var components = URLComponents(string: baseURL)
+    components?.queryItems = [URLQueryItem(name: "start_date", value: startDateString)]
+    
+    return components?.url
+}
+
+func executeRequest(request: URLRequest, completion: @escaping (Result<[Order], Error>) -> Void) {
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if let error = error {
+            print("Error: \(error)")
+            completion(.failure(error))
+            return
+        }
+        
+        guard let data = data else {
+            print("No data received")
+            completion(.failure(NSError(domain: "No data received", code: 0, userInfo: nil)))
+            return
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let orderResponse = try decoder.decode(OrderResponse.self, from: data)
+            
+            // Extract the orders from the response
+            let orders = orderResponse.orders
+            
+            completion(.success(orders))
+        } catch {
+            print("JSON Decoding Error: \(error)")
+            completion(.failure(error))
+        }
+    }
+    
+    task.resume()
+}
 
 
+
+
+// MARK: - Extensions
 //The following 2 extensions are used to encode data to the form data format
 // SOURCE: https://sagar-r-kothari.github.io/swift/2020/02/20/Swift-Form-Data-Request.html
 extension Dictionary {
@@ -85,4 +142,3 @@ extension CharacterSet {
         return allowed
     }()
 }
-
