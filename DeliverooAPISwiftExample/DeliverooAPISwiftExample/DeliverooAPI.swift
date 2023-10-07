@@ -114,6 +114,46 @@ func executeRequest(request: URLRequest, completion: @escaping (Result<[Order], 
     task.resume()
 }
 
+// MARK: - Get Restaurant Info
+func requestRestaurantInfo(accessToken: String, orderId: String, completion: @escaping (Result<RestaurantInfo, Error>) -> Void) {
+    let baseURL = "\(Constants.RESTAURANT_INFO)\(orderId)"
+    
+    guard let finalURL = URL(string: baseURL) else {
+        print("Error creating the final URL")
+        return
+    }
+    
+    var request = URLRequest(url: finalURL)
+    request.httpMethod = "GET"
+    
+    request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if let error = error {
+            print("Error: \(error)")
+            completion(.failure(error))
+            return
+        }
+        
+        guard let data = data else {
+            print("No data received")
+            completion(.failure(NSError(domain: "No data received", code: 0, userInfo: nil)))
+            return
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let restaurantInfo = try decoder.decode(RestaurantInfo.self, from: data)
+            completion(.success(restaurantInfo))
+        } catch {
+            print("JSON Decoding Error: \(error)")
+            completion(.failure(error))
+        }
+    }
+    
+    task.resume()
+}
+
 // MARK: - Get Restarant Location
 func requestRestaurants(accessToken: String, latitude: Double, longitude: Double, completion: @escaping (Result<[Restaurant], Error>) -> Void) {
     let baseURL = Constants.RESTAURANT_LOCATION
